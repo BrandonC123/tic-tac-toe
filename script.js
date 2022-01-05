@@ -3,7 +3,7 @@ const gameBoard = (() => {
     let players = [];
     return {
         game,
-        players
+        players,
     };
 })();
 
@@ -35,18 +35,38 @@ const display = (() => {
     function createPlayer(playerName, selection) {
         const player = Player(playerName, selection);
         gameBoard.players.push(player);
+        if (gameBoard.players.length == 2) {
+            display.playerMoves(
+                gameBoard.players[0].getSelection(),
+                gameBoard.players[1].getSelection()
+            );
+        }
     }
     const p1Selection = document.querySelectorAll(".p1Selection");
     p1Selection.forEach((sel) => {
         sel.addEventListener("click", () => {
-            sel.setAttribute("id", "p1-sel")
+            sel.setAttribute("id", "p1-sel");
+            sel.classList.add("p1-selected");
+        });
+    });
+    const p2Selection = document.querySelectorAll(".p2Selection");
+    p2Selection.forEach((sel) => {
+        sel.addEventListener("click", () => {
+            sel.setAttribute("id", "p2-sel");
+            sel.classList.add("p2-selected");
         });
     });
     const enterBtns = document.querySelectorAll(".submit-data");
     enterBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
-            const pName = document.getElementById("p1-name").value;
-            const sel = document.getElementById("p1-sel").textContent;
+            let p;
+            if (btn.classList.contains("p1")) {
+                p = "p1";
+            } else {
+                p = "p2";
+            }
+            const pName = document.getElementById(p + "-name").value;
+            const sel = document.getElementById(p + "-sel").textContent;
             createPlayer(pName, sel);
             console.log(pName, sel);
         });
@@ -56,6 +76,12 @@ const display = (() => {
     };
 })();
 
-const Player = (playerName, selection) => {};
+const Player = (playerName, selection) => {
+    function getSelection() {
+        return selection;
+    }
+    return {
+        getSelection,
+    };
+};
 
-display.playerMoves("X", "O");
