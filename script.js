@@ -42,20 +42,28 @@ const display = (() => {
             );
         }
     }
-    const p1Selection = document.querySelectorAll(".p1Selection");
-    p1Selection.forEach((sel) => {
-        sel.addEventListener("click", () => {
-            sel.setAttribute("id", "p1-sel");
-            sel.classList.add("p1-selected");
+    const selection = document.querySelectorAll(".selection");
+    let activeP1;
+    let activeP2;
+    for (let i = 0; i < selection.length; i++) {
+        selection[i].addEventListener("click", () => {
+            if (i <= 1) {
+                if (activeP1 != null) {
+                    activeP1.classList.remove("p1-selected");
+                }
+                selection[i].setAttribute("id", "p1-sel");
+                selection[i].classList.add("p1-selected");
+                activeP1 = selection[i];
+            } else {
+                if (activeP2 != null) {
+                    activeP2.classList.remove("p2-selected");
+                }
+                selection[i].setAttribute("id", "p2-sel");
+                selection[i].classList.add("p2-selected");
+                activeP2 = selection[i];
+            }
         });
-    });
-    const p2Selection = document.querySelectorAll(".p2Selection");
-    p2Selection.forEach((sel) => {
-        sel.addEventListener("click", () => {
-            sel.setAttribute("id", "p2-sel");
-            sel.classList.add("p2-selected");
-        });
-    });
+    }
     const enterBtns = document.querySelectorAll(".submit-data");
     enterBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -84,4 +92,3 @@ const Player = (playerName, selection) => {
         getSelection,
     };
 };
-
