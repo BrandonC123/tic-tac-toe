@@ -49,17 +49,15 @@ const display = (() => {
         selection[i].addEventListener("click", () => {
             if (i <= 1) {
                 if (activeP1 != null) {
-                    activeP1.classList.remove("p1-selected");
+                    activeP1.removeAttribute("id");
                 }
                 selection[i].setAttribute("id", "p1-sel");
-                selection[i].classList.add("p1-selected");
                 activeP1 = selection[i];
             } else {
                 if (activeP2 != null) {
-                    activeP2.classList.remove("p2-selected");
+                    activeP2.removeAttribute("id");
                 }
                 selection[i].setAttribute("id", "p2-sel");
-                selection[i].classList.add("p2-selected");
                 activeP2 = selection[i];
             }
         });
