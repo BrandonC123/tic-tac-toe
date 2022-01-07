@@ -19,10 +19,10 @@ const gameBoard = (() => {
                 return true;
             }
             if (num == 6) {
-                if (cross6(num,playerClass)) return true;
+                if (cross6(num, playerClass)) return true;
             }
             if (num == 8) {
-                if (cross8(num,playerClass)) return true;
+                if (cross8(num, playerClass)) return true;
             }
         }
         if (num == 0 || num == 3 || num == 6) {
@@ -145,16 +145,20 @@ const gameBoard = (() => {
     };
 })();
 
-const Player = (playerName, selection) => {
+const Player = (playerName, selection, player) => {
     function getName() {
         return playerName;
     }
     function getSelection() {
         return selection;
     }
+    function getPlayer() {
+        return player;
+    }
     return {
         getSelection,
         getName,
+        getPlayer,
     };
 };
 
@@ -191,16 +195,9 @@ const display = (() => {
             });
         }
     }
-    function createPlayer(playerName, selection) {
-        const player = Player(playerName, selection);
+    function createPlayer(playerName, selection, p) {
+        const player = Player(playerName, selection, p);
         gameBoard.players.push(player);
-        if (gameBoard.players.length == 2) {
-            let p1 = gameBoard.players[0].getSelection();
-            let p2 = gameBoard.players[1].getSelection();
-            if (p1 != p2) {
-                display.playerMoves(p1, p2);
-            }
-        }
     }
 
     const selection = document.querySelectorAll(".selection");
@@ -234,14 +231,45 @@ const display = (() => {
             }
             const pName = document.getElementById(p + "-name").value;
             const sel = document.getElementById(p + "-sel").textContent;
-            createPlayer(pName, sel);
-            console.log(pName, sel);
+            const changeName = document.getElementById(p);
+            changeName.textContent = pName;
+            createPlayer(pName, sel, p);
         });
+    });
+    const turnBtns = document.querySelectorAll(".turn-btns");
+    let activeTurn;
+    for (let i = 0; i < turnBtns.length; i++) {
+        turnBtns[i].addEventListener("click", () => {
+            if (i == 0) {
+                if (activeTurn != null) {
+                    activeTurn.classList.remove("turn-p2");
+                }
+                _activePlayer = true;
+                turnBtns[i].classList.add("turn-p1");
+            } else {
+                if (activeTurn != null) {
+                    activeTurn.classList.remove("turn-p1");
+                }
+                _activePlayer = false;
+                turnBtns[i].classList.add("turn-p2");
+            }
+            activeTurn = turnBtns[i];
+        });
+    }
+    const startBtn = document.getElementById("start-btn");
+    startBtn.addEventListener("click", () => {
+        if (gameBoard.players.length == 2) {
+            let p1 = gameBoard.players[0].getSelection();
+            let p2 = gameBoard.players[1].getSelection();
+            if (p1 != p2) {
+                display.playerMoves(p1, p2);
+            }
+        }
     });
     return {
         playerMoves,
         createPlayer,
     };
 })();
-const testPlayer1 = display.createPlayer("brandon", "X");
-const testPlayer2 = display.createPlayer("brando", "O");
+// const testPlayer1 = display.createPlayer("brandon", "X");
+// const testPlayer2 = display.createPlayer("brando", "O");
