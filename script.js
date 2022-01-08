@@ -4,32 +4,32 @@ const gameBoard = (() => {
     const boxes = document.querySelectorAll(".box");
     function gameDecider(num, playerClass) {
         if (num == 0 || num == 1 || num == 2) {
-            if (horiDown(num, playerClass)) {
+            if (winCheck(num, playerClass, 3)) {
                 return true;
             }
             if (num == 0) {
-                if (cross0(num, playerClass)) return true;
+                if (winCheck(num, playerClass, 4)) return true;
             }
             if (num == 2) {
-                if (cross2(num, playerClass)) return true;
+                if (winCheck(num, playerClass, 2)) return true;
             }
         }
         if (num == 6 || num == 7 || num == 8) {
-            if (horiUp(num, playerClass)) {
+            if (winCheck(num, playerClass, -3)) {
                 return true;
             }
             if (num == 6) {
-                if (cross6(num, playerClass)) return true;
+                if (winCheck(num, playerClass, -2)) return true;
             }
             if (num == 8) {
-                if (cross8(num, playerClass)) return true;
+                if (winCheck(num, playerClass, -4)) return true;
             }
         }
         if (num == 0 || num == 3 || num == 6) {
-            if (vertR(num, playerClass)) return true;
+            if (winCheck(num, playerClass, 1)) return true;
         }
         if (num == 2 || num == 5 || num == 8) {
-            if (vertL(num, playerClass)) return true;
+            if (winCheck(num, playerClass, -1)) return true;
         }
         if (num == 1 || num == 7) {
             if (horiCenter(num, playerClass)) return true;
@@ -38,81 +38,11 @@ const gameBoard = (() => {
             if (vertCenter(num, playerClass)) return true;
         }
     }
-    function horiDown(num, playerClass) {
+    function winCheck(num, playerClass, value) {
         if (
             boxes[num].classList.contains(playerClass) &&
-            boxes[num + 3].classList.contains(playerClass) &&
-            boxes[num + 6].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function horiUp(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num - 3].classList.contains(playerClass) &&
-            boxes[num - 6].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function vertR(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num + 1].classList.contains(playerClass) &&
-            boxes[num + 2].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function vertL(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num - 1].classList.contains(playerClass) &&
-            boxes[num - 2].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function cross2(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num + 2].classList.contains(playerClass) &&
-            boxes[num + 4].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function cross6(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num - 2].classList.contains(playerClass) &&
-            boxes[num - 4].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function cross0(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num + 4].classList.contains(playerClass) &&
-            boxes[num + 8].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function cross8(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num - 4].classList.contains(playerClass) &&
-            boxes[num - 8].classList.contains(playerClass)
+            boxes[num + value].classList.contains(playerClass) &&
+            boxes[num + (value * 2)].classList.contains(playerClass)
         ) {
             return true;
         }
@@ -179,7 +109,6 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p1-color");
                     _activePlayer = false;
                     color = "p1-color";
-                    // console.log("p1");
                 } else if (
                     !_activePlayer &&
                     !_boxes[i].classList.contains("taken")
@@ -188,7 +117,6 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p2-color");
                     _activePlayer = true;
                     color = "p2-color";
-                    // console.log("p2");
                 }
                 console.log(i);
                 console.log(gameBoard.gameDecider(i, color));
