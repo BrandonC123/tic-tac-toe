@@ -32,37 +32,31 @@ const gameBoard = (() => {
             if (winCheck(num, playerClass, -1)) return true;
         }
         if (num == 1 || num == 7) {
-            if (horiCenter(num, playerClass)) return true;
+            if (winCheckCenter(num, playerClass, 1)) return true;
         }
         if (num == 3 || num == 5) {
-            if (vertCenter(num, playerClass)) return true;
+            if (winCheckCenter(num, playerClass, 3)) return true;
+        }
+        if (num == 4) {
+            if (winCheckCenter(num, playerClass, 3)) return true;
+            if (winCheckCenter(num, playerClass, 4)) return true;
+            if (winCheckCenter(num, playerClass, 1)) return true;
+            if (winCheckCenter(num, playerClass, 2)) return true;
         }
     }
     function winCheck(num, playerClass, value) {
         if (
-            boxes[num].classList.contains(playerClass) &&
             boxes[num + value].classList.contains(playerClass) &&
-            boxes[num + (value * 2)].classList.contains(playerClass)
+            boxes[num + value * 2].classList.contains(playerClass)
         ) {
             return true;
         }
         return false;
     }
-    function horiCenter(num, playerClass) {
+    function winCheckCenter(num, playerClass, value) {
         if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num + 1].classList.contains(playerClass) &&
-            boxes[num - 1].classList.contains(playerClass)
-        ) {
-            return true;
-        }
-        return false;
-    }
-    function vertCenter(num, playerClass) {
-        if (
-            boxes[num].classList.contains(playerClass) &&
-            boxes[num + 3].classList.contains(playerClass) &&
-            boxes[num - 3].classList.contains(playerClass)
+            boxes[num + value].classList.contains(playerClass) &&
+            boxes[num - value].classList.contains(playerClass)
         ) {
             return true;
         }
@@ -109,6 +103,7 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p1-color");
                     _activePlayer = false;
                     color = "p1-color";
+                    console.log(p1Choice + " p1choice");
                 } else if (
                     !_activePlayer &&
                     !_boxes[i].classList.contains("taken")
@@ -117,8 +112,8 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p2-color");
                     _activePlayer = true;
                     color = "p2-color";
+                    console.log(p2Choice + " p2choice");
                 }
-                console.log(i);
                 console.log(gameBoard.gameDecider(i, color));
             });
         }
@@ -190,7 +185,13 @@ const display = (() => {
             let p1 = gameBoard.players[0].getSelection();
             let p2 = gameBoard.players[1].getSelection();
             if (p1 != p2) {
-                display.playerMoves(p1, p2);
+                if (gameBoard.players[0].getPlayer() == "p1") {
+                    display.playerMoves(p1, p2);
+                    console.log(p1 + " " + p2 + " first if");
+                } else {
+                    display.playerMoves(p2, p1);
+                    console.log(p2 + " " + p1);
+                }
             }
         }
     });
