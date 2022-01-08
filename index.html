@@ -5,7 +5,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
-            href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Oswald&family=Ubuntu&display=swap"
             rel="stylesheet"
         />
         <meta charset="UTF-8" />
@@ -46,10 +46,14 @@
             </div>
         </div>
         <div class="turn-container">
-            <div class="turn-btns" id="p1-first">Player1 plays first</div>
-            <div class="turn-btns" id="p2-first">Player2 plays first</div>
+            <button class="turn-btns" id="p1-first">Player1 plays first</button>
+            <button class="turn-btns" id="p2-first">Player2 plays first</button>
         </div>
-        <div id="start-btn">Start</div>
+        <div class="win-popup">
+            <div id="win-text"></div>
+            <button id="exit-win">Exit</button>
+        </div>
+        <button id="start-btn">Start</button>
         <script src="script.js"></script>
     </body>
 </html>
