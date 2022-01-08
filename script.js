@@ -103,7 +103,6 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p1-color");
                     _activePlayer = false;
                     color = "p1-color";
-                    console.log(p1Choice + " p1choice");
                 } else if (
                     !_activePlayer &&
                     !_boxes[i].classList.contains("taken")
@@ -112,12 +111,25 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p2-color");
                     _activePlayer = true;
                     color = "p2-color";
-                    console.log(p2Choice + " p2choice");
                 }
-                console.log(gameBoard.gameDecider(i, color));
+                if (gameBoard.gameDecider(i, color)) {
+                    const text = document.getElementById("win-text");
+                    const popup = document.querySelector(".win-popup");
+                    if (_activePlayer) {
+                        text.textContent = gameBoard.players[0].getName() + " is the winner!";
+                    } else {
+                        text.textContent = gameBoard.players[1].getName() + " is the winner!";
+                    }
+                    popup.classList.add("win-open");
+                }
             });
         }
     }
+    const exitBtn = document.getElementById("exit-win");
+    exitBtn.addEventListener("click", () => {
+        const popup = document.querySelector(".win-popup");
+        popup.classList.add("win-close");
+    });
     function createPlayer(playerName, selection, p) {
         const player = Player(playerName, selection, p);
         gameBoard.players.push(player);
@@ -187,13 +199,15 @@ const display = (() => {
             if (p1 != p2) {
                 if (gameBoard.players[0].getPlayer() == "p1") {
                     display.playerMoves(p1, p2);
-                    console.log(p1 + " " + p2 + " first if");
                 } else {
                     display.playerMoves(p2, p1);
-                    console.log(p2 + " " + p1);
                 }
             }
         }
+        startBtn.classList.add("start-pressed");
+    });
+    startBtn.addEventListener("transitionend", () => {
+        startBtn.classList.remove("start-pressed");
     });
     return {
         playerMoves,
