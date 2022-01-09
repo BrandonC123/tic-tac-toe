@@ -89,6 +89,8 @@ const Player = (playerName, selection, player) => {
 const display = (() => {
     const _boxes = document.querySelectorAll(".box");
     let _activePlayer = true;
+    let player1Index;
+    let player2Index;
     function displayMoves(box, choice) {
         box.textContent = choice;
         gameBoard.game.push(choice);
@@ -96,6 +98,7 @@ const display = (() => {
     }
     function playerMoves(p1Choice, p2Choice) {
         let color;
+        let count = 0;
         for (let i = 0; i < _boxes.length; i++) {
             _boxes[i].addEventListener("click", () => {
                 if (_activePlayer && !_boxes[i].classList.contains("taken")) {
@@ -112,14 +115,23 @@ const display = (() => {
                     _activePlayer = true;
                     color = "p2-color";
                 }
+                count++;
+                const text = document.getElementById("win-text");
+                const popup = document.querySelector(".win-popup");
                 if (gameBoard.gameDecider(i, color)) {
-                    const text = document.getElementById("win-text");
-                    const popup = document.querySelector(".win-popup");
-                    if (_activePlayer) {
-                        text.textContent = gameBoard.players[0].getName() + " is the winner!";
+                    if (color == "p1-color") {
+                        text.textContent =
+                            document.getElementById("p1").textContent +
+                            " is the winner!";
                     } else {
-                        text.textContent = gameBoard.players[1].getName() + " is the winner!";
+                        text.textContent =
+                            document.getElementById("p2").textContent +
+                            " is the winner!";
                     }
+                    popup.classList.add("win-open");
+                }
+                else if (count == 9) {
+                    text.textContent = "Tie!";
                     popup.classList.add("win-open");
                 }
             });
@@ -129,10 +141,19 @@ const display = (() => {
     exitBtn.addEventListener("click", () => {
         const popup = document.querySelector(".win-popup");
         popup.classList.add("win-close");
+        clearScreen();
     });
+    function clearScreen() {
+        _boxes.forEach((box) => (box.textContent = ""));
+    }
     function createPlayer(playerName, selection, p) {
         const player = Player(playerName, selection, p);
         gameBoard.players.push(player);
+        if (p == "p1") {
+            player1Index = gameBoard.players.length - 1;
+        } else {
+            player2Index = gameBoard.players.length - 1;
+        }
     }
 
     const selection = document.querySelectorAll(".selection");
@@ -155,20 +176,25 @@ const display = (() => {
             }
         });
     }
+    const status = document.getElementById("status");
     const enterBtns = document.querySelectorAll(".submit-data");
     enterBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
-            let p;
-            if (btn.classList.contains("p1")) {
-                p = "p1";
-            } else {
-                p = "p2";
+            try {
+                let p;
+                if (btn.classList.contains("p1")) {
+                    p = "p1";
+                } else {
+                    p = "p2";
+                }
+                const pName = document.getElementById(p + "-name").value;
+                const sel = document.getElementById(p + "-sel").textContent;
+                const changeName = document.getElementById(p);
+                changeName.textContent = pName;
+                createPlayer(pName, sel, p);
+            } catch (error) {
+                status.textContent = "Status: Select every option!";
             }
-            const pName = document.getElementById(p + "-name").value;
-            const sel = document.getElementById(p + "-sel").textContent;
-            const changeName = document.getElementById(p);
-            changeName.textContent = pName;
-            createPlayer(pName, sel, p);
         });
     });
     const turnBtns = document.querySelectorAll(".turn-btns");
@@ -202,6 +228,9 @@ const display = (() => {
                 } else {
                     display.playerMoves(p2, p1);
                 }
+            } else {
+                console.log("t");
+                status.textContent = "Status: Cannot have same X/O!";
             }
         }
         startBtn.classList.add("start-pressed");
