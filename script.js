@@ -1,6 +1,5 @@
 const gameBoard = (() => {
     let game = [];
-    let players = [];
     const boxes = document.querySelectorAll(".box");
     function gameDecider(num, playerClass) {
         if (num == 0 || num == 1 || num == 2) {
@@ -64,7 +63,6 @@ const gameBoard = (() => {
     }
     return {
         game,
-        players,
         gameDecider,
     };
 })();
@@ -89,8 +87,8 @@ const Player = (playerName, selection, player) => {
 const display = (() => {
     const _boxes = document.querySelectorAll(".box");
     let _activePlayer = true;
-    let player1Index;
-    let player2Index;
+    let player1;
+    let player2;
     function displayMoves(box, choice) {
         box.textContent = choice;
         gameBoard.game.push(choice);
@@ -129,8 +127,7 @@ const display = (() => {
                             " is the winner!";
                     }
                     popup.classList.add("win-open");
-                }
-                else if (count == 9) {
+                } else if (count == 9) {
                     text.textContent = "Tie!";
                     popup.classList.add("win-open");
                 }
@@ -146,13 +143,12 @@ const display = (() => {
     function clearScreen() {
         _boxes.forEach((box) => (box.textContent = ""));
     }
+    
     function createPlayer(playerName, selection, p) {
-        const player = Player(playerName, selection, p);
-        gameBoard.players.push(player);
         if (p == "p1") {
-            player1Index = gameBoard.players.length - 1;
+            player1 = Player(playerName, selection, p);
         } else {
-            player2Index = gameBoard.players.length - 1;
+            player2 = Player(playerName, selection, p);
         }
     }
 
@@ -219,11 +215,11 @@ const display = (() => {
     }
     const startBtn = document.getElementById("start-btn");
     startBtn.addEventListener("click", () => {
-        if (gameBoard.players.length == 2) {
-            let p1 = gameBoard.players[0].getSelection();
-            let p2 = gameBoard.players[1].getSelection();
+        if (player1 != null && player2 != null) {
+            let p1 = player1.getSelection();
+            let p2 = player2.getSelection();
             if (p1 != p2) {
-                if (gameBoard.players[0].getPlayer() == "p1") {
+                if (player1.getPlayer() == "p1") {
                     display.playerMoves(p1, p2);
                 } else {
                     display.playerMoves(p2, p1);
