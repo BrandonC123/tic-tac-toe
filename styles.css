@@ -5,6 +5,11 @@ body {
     align-items: center;
     gap: 10px;
     background-color: lightgray;
+    font-family: 'Oswald', sans-serif;
+}
+
+.title {
+    font-size: 34px;
 }
 
 .game-container {
@@ -49,6 +54,7 @@ body {
     border-radius: 2px;
     background-color: white;
     padding: 8px;
+    font-family: 'Ubuntu', sans-serif;
 }
 
 #p1-sel {
@@ -122,15 +128,55 @@ body {
 .turn-btns {
     background-color: white;
     border: 2px solid black;
+    border-radius: 4px;
     padding: 5px;
 }
 
+.turn-p1 {
+    border: solid 3px royalblue;
+}
+
+.turn-p2 {
+    border: solid 3px rgb(209, 46, 46);
+}
+
 #start-btn {
+    transition: all .2s;
+}
+
+.start-pressed {
+    border: 3px solid purple;
+    border-radius: 4px;
+}
+
+.win-popup {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    height: 100px;
+    width: 200px;
+    opacity: 0;
+    pointer-events: none;
     background-color: white;
-    border: 2px solid black;
-    padding: 5px;
+}
+
+.win-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.win-close {
+    opacity: 0;
+    pointer-events: none;
 }
 
 input {
     width: 100px;
+}
+
+button {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
 }
