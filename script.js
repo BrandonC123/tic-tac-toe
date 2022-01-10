@@ -99,7 +99,7 @@ const display = (() => {
         let color;
         let count = 0;
         for (let i = 0; i < _boxes.length; i++) {
-            _boxes[i].addEventListener("click", () => {
+            _boxes[i].addEventListener("click", function moves() {
                 if (_activePlayer && !_boxes[i].classList.contains("taken")) {
                     _boxes[i] = displayMoves(_boxes[i], p1Choice);
                     _boxes[i].classList.add("taken", "p1-color");
@@ -114,7 +114,7 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p2-color");
                     _activePlayer = true;
                     color = "p2-color";
-                    status.textContent = `Status: ${player1.getName()} turn`; 
+                    status.textContent = `Status: ${player1.getName()} turn`;
                 }
                 count++;
                 const text = document.getElementById("win-text");
@@ -149,6 +149,7 @@ const display = (() => {
             box.classList.remove("taken");
             box.classList.remove("p1-color");
             box.classList.remove("p2-color");
+            box.removeEventListener("click", moves());
         });
     }
 
@@ -205,22 +206,29 @@ const display = (() => {
     let activeTurn;
     for (let i = 0; i < turnBtns.length; i++) {
         turnBtns[i].addEventListener("click", () => {
-            if (i == 0) {
-                if (activeTurn != null) {
-                    activeTurn.classList.remove("turn-p2");
+            try {
+                let p1Name = player1.getName();
+                let p2Name = player2.getName();
+                if (i == 0) {
+                    if (activeTurn != null) {
+                        activeTurn.classList.remove("turn-p2");
+                    }
+                    _activePlayer = true;
+                    turnBtns[i].classList.add("turn-p1");
+                    status.textContent = `Status: ${p1Name} first`;
+                } else {
+                    if (activeTurn != null) {
+                        activeTurn.classList.remove("turn-p1");
+                    }
+                    _activePlayer = false;
+                    turnBtns[i].classList.add("turn-p2");
+                    status.textContent = `Status: ${p2Name} first`;
                 }
-                _activePlayer = true;
-                turnBtns[i].classList.add("turn-p1");
-                status.textContent = `Status: ${player1.getName()} first`
-            } else {
-                if (activeTurn != null) {
-                    activeTurn.classList.remove("turn-p1");
-                }
-                _activePlayer = false;
-                turnBtns[i].classList.add("turn-p2");
-                status.textContent = `Status: ${player2.getName()} first`
+                activeTurn = turnBtns[i];
+            } catch (error) {
+                status.textContent =
+                    "Status: Please create both player1 and player2";
             }
-            activeTurn = turnBtns[i];
         });
     }
     const startBtn = document.getElementById("start-btn");
@@ -246,7 +254,7 @@ const display = (() => {
     const resetBtn = document.getElementById("reset");
     resetBtn.addEventListener("click", () => {
         clearScreen();
-    })
+    });
     return {
         playerMoves,
         createPlayer,
