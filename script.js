@@ -86,6 +86,7 @@ const Player = (playerName, selection, player) => {
 
 const display = (() => {
     const _boxes = document.querySelectorAll(".box");
+    const status = document.getElementById("status");
     let _activePlayer = true;
     let player1;
     let player2;
@@ -104,6 +105,7 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p1-color");
                     _activePlayer = false;
                     color = "p1-color";
+                    status.textContent = `Status: ${player2.getName()} turn`;
                 } else if (
                     !_activePlayer &&
                     !_boxes[i].classList.contains("taken")
@@ -112,6 +114,7 @@ const display = (() => {
                     _boxes[i].classList.add("taken", "p2-color");
                     _activePlayer = true;
                     color = "p2-color";
+                    status.textContent = `Status: ${player1.getName()} turn`; 
                 }
                 count++;
                 const text = document.getElementById("win-text");
@@ -141,9 +144,14 @@ const display = (() => {
         clearScreen();
     });
     function clearScreen() {
-        _boxes.forEach((box) => (box.textContent = ""));
+        _boxes.forEach((box) => {
+            box.textContent = "";
+            box.classList.remove("taken");
+            box.classList.remove("p1-color");
+            box.classList.remove("p2-color");
+        });
     }
-    
+
     function createPlayer(playerName, selection, p) {
         if (p == "p1") {
             player1 = Player(playerName, selection, p);
@@ -172,7 +180,7 @@ const display = (() => {
             }
         });
     }
-    const status = document.getElementById("status");
+
     const enterBtns = document.querySelectorAll(".submit-data");
     enterBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -203,12 +211,14 @@ const display = (() => {
                 }
                 _activePlayer = true;
                 turnBtns[i].classList.add("turn-p1");
+                status.textContent = `Status: ${player1.getName()} first`
             } else {
                 if (activeTurn != null) {
                     activeTurn.classList.remove("turn-p1");
                 }
                 _activePlayer = false;
                 turnBtns[i].classList.add("turn-p2");
+                status.textContent = `Status: ${player2.getName()} first`
             }
             activeTurn = turnBtns[i];
         });
@@ -225,7 +235,6 @@ const display = (() => {
                     display.playerMoves(p2, p1);
                 }
             } else {
-                console.log("t");
                 status.textContent = "Status: Cannot have same X/O!";
             }
         }
@@ -234,6 +243,10 @@ const display = (() => {
     startBtn.addEventListener("transitionend", () => {
         startBtn.classList.remove("start-pressed");
     });
+    const resetBtn = document.getElementById("reset");
+    resetBtn.addEventListener("click", () => {
+        clearScreen();
+    })
     return {
         playerMoves,
         createPlayer,
