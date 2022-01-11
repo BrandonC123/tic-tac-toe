@@ -90,12 +90,13 @@ const display = (() => {
     let _activePlayer = true;
     let player1;
     let player2;
+    let newRound = false;
+    let activeGame = false;
     function displayMoves(box, choice) {
         box.textContent = choice;
         gameBoard.game.push(choice);
         return box;
     }
-    let newGame = false;
     const popup = document.querySelector(".win-popup");
     let count = 0;
     function moves(p1Choice, p2Choice, box, i) {
@@ -132,7 +133,7 @@ const display = (() => {
                 if (!boxDel.classList.contains("taken")) {
                     boxDel.classList.add("taken");
                 }
-            })
+            });
         } else if (count == 9) {
             text.textContent = "Tie!";
             popup.classList.add("win-open");
@@ -140,14 +141,15 @@ const display = (() => {
     }
     function playerMoves(p1Choice, p2Choice) {
         for (let i = 0; i < _boxes.length; i++) {
-            _boxes[i].addEventListener("click", ()  => {
-                moves(p1Choice, p2Choice, _boxes[i], i)
+            _boxes[i].addEventListener("click", () => {
+                moves(p1Choice, p2Choice, _boxes[i], i);
             });
         }
     }
     const exitBtn = document.getElementById("exit-win");
     exitBtn.addEventListener("click", () => {
         popup.classList.add("win-close");
+        activeGame = false;
         clearScreen();
         status.textContent = "Status: press start for new game";
     });
@@ -160,8 +162,8 @@ const display = (() => {
                 box.classList.add("taken");
             }
         });
+        newRound = true;
         count = 0;
-        newGame = true;
     }
     function openScreen() {
         _boxes.forEach((box) => {
@@ -169,7 +171,7 @@ const display = (() => {
         });
         popup.classList.remove("win-open");
         popup.classList.remove("win-close");
-        newGame = false;
+        newRound = false;
     }
     function createPlayer(playerName, selection, p) {
         if (p == "p1") {
@@ -224,48 +226,65 @@ const display = (() => {
     let activeTurn;
     for (let i = 0; i < turnBtns.length; i++) {
         turnBtns[i].addEventListener("click", () => {
-            try {
-                let p1Name = player1.getName();
-                let p2Name = player2.getName();
+            if (!activeGame) {
                 if (i == 0) {
                     if (activeTurn != null) {
                         activeTurn.classList.remove("turn-p2");
                     }
-                    _activePlayer = true;
                     turnBtns[i].classList.add("turn-p1");
-                    status.textContent = `Status: ${p1Name} first`;
+                    updateTurn(turnBtns[i]);
                 } else {
                     if (activeTurn != null) {
                         activeTurn.classList.remove("turn-p1");
                     }
-                    _activePlayer = false;
                     turnBtns[i].classList.add("turn-p2");
-                    status.textContent = `Status: ${p2Name} first`;
+                    updateTurn(turnBtns[i]);
                 }
                 activeTurn = turnBtns[i];
-            } catch (error) {
-                status.textContent =
-                    "Status: Please create both player1 and player2";
             }
         });
+    }
+    function updateTurn(turn) {
+        try {
+            let p1Name = player1.getName();
+            let p2Name = player2.getName();
+            if (turn.classList.contains("turn-p1")) {
+                _activePlayer = true;
+                status.textContent = `Status: ${p1Name} first`;
+            }
+            if (turn.classList.contains("turn-p2")) {
+                _activePlayer = false;
+                status.textContent = `Status: ${p2Name} first`;
+            }
+        } catch (error) {
+            status.textContent =
+                "Status: Please create both player1 and player2";
+        }
     }
     const startBtn = document.getElementById("start-btn");
     let t = true;
     startBtn.addEventListener("click", () => {
-        if (player1 != null && player2 != null && activeTurn != null) {
+        if (
+            player1 != null &&
+            player2 != null &&
+            activeTurn != null &&
+            activeGame == false
+        ) {
             let p1 = player1.getSelection();
             let p2 = player2.getSelection();
-            if (newGame) {
+            if (newRound) {
                 openScreen();
                 t = false;
+                updateTurn(activeTurn);
             }
+            activeGame = true;
             if (p1 != p2 && t) {
                 if (player1.getPlayer() == "p1") {
                     playerMoves(p1, p2);
                 } else {
                     playerMoves(p2, p1);
                 }
-            } 
+            }
             if (p1 == p2) {
                 status.textContent = "Status: Cannot have same X/O!";
             }
