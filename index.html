@@ -15,7 +15,7 @@
     </head>
     <body>
         <div class="title">TIC TAC TOE</div>
-        <div class="status">Status:</div>
+        <div id="status">Status:</div>
         <div class="game-container">
             <div class="player-content" id="player1">
                 <div class="player-name" id="p1">Player1</div>
@@ -24,6 +24,7 @@
                 <div class="p1Selection selection">X</div>
                 <div class="p1Selection selection">O</div>
                 <button class="submit-data p1" id="p1-submit">Enter</button>
+                <button class="new-player" id="new-p1">New</button>
             </div>
             <div class="grid-container">
                 <div class="box" id="box-0"></div>
@@ -43,6 +44,7 @@
                 <div class="p2Selection selection">X</div>
                 <div class="p2Selection selection">O</div>
                 <button class="submit-data p2" id="p2-submit">Enter</button>
+                <button class="new-player" id="new-p2">New</button>
             </div>
         </div>
         <div class="turn-container">
@@ -54,6 +56,7 @@
             <button id="exit-win">Exit</button>
         </div>
         <button id="start-btn">Start</button>
+        <button id="reset">Reset</button>
         <script src="script.js"></script>
     </body>
 </html>
