@@ -116,7 +116,6 @@ const display = (() => {
             status.textContent = `Status: ${player1.getName()} turn`;
             count++;
         }
-        console.log(count);
         const text = document.getElementById("win-text");
         if (gameBoard.gameDecider(i, color)) {
             if (color == "p1-color") {
@@ -149,7 +148,6 @@ const display = (() => {
     const exitBtn = document.getElementById("exit-win");
     exitBtn.addEventListener("click", () => {
         popup.classList.add("win-close");
-        activeGame = false;
         clearScreen();
         status.textContent = "Status: press start for new game";
     });
@@ -162,6 +160,7 @@ const display = (() => {
                 box.classList.add("taken");
             }
         });
+        activeGame = false;
         newRound = true;
         count = 0;
     }
