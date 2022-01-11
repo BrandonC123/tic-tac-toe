@@ -95,6 +95,7 @@ const display = (() => {
         gameBoard.game.push(choice);
         return box;
     }
+    let newGame = false;
     function playerMoves(p1Choice, p2Choice) {
         let color;
         let count = 0;
@@ -142,17 +143,25 @@ const display = (() => {
         const popup = document.querySelector(".win-popup");
         popup.classList.add("win-close");
         clearScreen();
+        status.textContent = "Status: press start for new game";
     });
     function clearScreen() {
         _boxes.forEach((box) => {
             box.textContent = "";
-            box.classList.remove("taken");
             box.classList.remove("p1-color");
             box.classList.remove("p2-color");
-            box.removeEventListener("click", moves());
+            if (!box.classList.contains("taken")) {
+                box.classList.add("taken");
+            }
         });
+        newGame = true;
     }
-
+    function openScreen() {
+        _boxes.forEach((box) => {
+                box.classList.remove("taken");
+        });
+        newGame = false;
+    }
     function createPlayer(playerName, selection, p) {
         if (p == "p1") {
             player1 = Player(playerName, selection, p);
@@ -236,6 +245,9 @@ const display = (() => {
         if (player1 != null && player2 != null) {
             let p1 = player1.getSelection();
             let p2 = player2.getSelection();
+            if (newGame) {
+                openScreen();
+            }
             if (p1 != p2) {
                 if (player1.getPlayer() == "p1") {
                     display.playerMoves(p1, p2);
