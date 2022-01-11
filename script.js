@@ -96,51 +96,51 @@ const display = (() => {
         return box;
     }
     let newGame = false;
-    function playerMoves(p1Choice, p2Choice) {
+    const popup = document.querySelector(".win-popup");
+    function moves(p1Choice, p2Choice, box, i, count) {
         let color;
+        if (_activePlayer && !box.classList.contains("taken")) {
+            box = displayMoves(box, p1Choice);
+            box.classList.add("taken", "p1-color");
+            _activePlayer = false;
+            color = "p1-color";
+            status.textContent = `Status: ${player2.getName()} turn`;
+        } else if (!_activePlayer && !box.classList.contains("taken")) {
+            box = displayMoves(box, p2Choice);
+            box.classList.add("taken", "p2-color");
+            _activePlayer = true;
+            color = "p2-color";
+            status.textContent = `Status: ${player1.getName()} turn`;
+        }
+        console.log(count);
+        count++;
+        const text = document.getElementById("win-text");
+        if (gameBoard.gameDecider(i, color)) {
+            if (color == "p1-color") {
+                text.textContent =
+                    document.getElementById("p1").textContent +
+                    " is the winner!";
+            } else {
+                text.textContent =
+                    document.getElementById("p2").textContent +
+                    " is the winner!";
+            }
+            popup.classList.add("win-open");
+        } else if (count == 9) {
+            text.textContent = "Tie!";
+            popup.classList.add("win-open");
+        }
+    }
+    function playerMoves(p1Choice, p2Choice) {
         let count = 0;
         for (let i = 0; i < _boxes.length; i++) {
-            _boxes[i].addEventListener("click", function moves() {
-                if (_activePlayer && !_boxes[i].classList.contains("taken")) {
-                    _boxes[i] = displayMoves(_boxes[i], p1Choice);
-                    _boxes[i].classList.add("taken", "p1-color");
-                    _activePlayer = false;
-                    color = "p1-color";
-                    status.textContent = `Status: ${player2.getName()} turn`;
-                } else if (
-                    !_activePlayer &&
-                    !_boxes[i].classList.contains("taken")
-                ) {
-                    _boxes[i] = displayMoves(_boxes[i], p2Choice);
-                    _boxes[i].classList.add("taken", "p2-color");
-                    _activePlayer = true;
-                    color = "p2-color";
-                    status.textContent = `Status: ${player1.getName()} turn`;
-                }
-                count++;
-                const text = document.getElementById("win-text");
-                const popup = document.querySelector(".win-popup");
-                if (gameBoard.gameDecider(i, color)) {
-                    if (color == "p1-color") {
-                        text.textContent =
-                            document.getElementById("p1").textContent +
-                            " is the winner!";
-                    } else {
-                        text.textContent =
-                            document.getElementById("p2").textContent +
-                            " is the winner!";
-                    }
-                    popup.classList.add("win-open");
-                } else if (count == 9) {
-                    text.textContent = "Tie!";
-                    popup.classList.add("win-open");
-                }
+            _boxes[i].addEventListener("click", ()  => {
+                moves(p1Choice, p2Choice, _boxes[i], i, count)
             });
         }
     }
     const exitBtn = document.getElementById("exit-win");
     exitBtn.addEventListener("click", () => {
-        const popup = document.querySelector(".win-popup");
         popup.classList.add("win-close");
         clearScreen();
         status.textContent = "Status: press start for new game";
@@ -158,8 +158,10 @@ const display = (() => {
     }
     function openScreen() {
         _boxes.forEach((box) => {
-                box.classList.remove("taken");
+            box.classList.remove("taken");
         });
+        popup.classList.remove("win-open");
+        popup.classList.remove("win-close");
         newGame = false;
     }
     function createPlayer(playerName, selection, p) {
@@ -241,20 +243,23 @@ const display = (() => {
         });
     }
     const startBtn = document.getElementById("start-btn");
+    let t = true;
     startBtn.addEventListener("click", () => {
         if (player1 != null && player2 != null) {
             let p1 = player1.getSelection();
             let p2 = player2.getSelection();
             if (newGame) {
                 openScreen();
+                t = false;
             }
-            if (p1 != p2) {
+            if (p1 != p2 && t) {
                 if (player1.getPlayer() == "p1") {
-                    display.playerMoves(p1, p2);
+                    playerMoves(p1, p2);
                 } else {
-                    display.playerMoves(p2, p1);
+                    playerMoves(p2, p1);
                 }
-            } else {
+            } 
+            if (p1 == p2) {
                 status.textContent = "Status: Cannot have same X/O!";
             }
         }
