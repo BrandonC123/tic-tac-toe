@@ -252,13 +252,13 @@ const display = (() => {
             if (!activeGame) {
                 if (i == 0) {
                     if (activeTurn != null) {
-                        activeTurn.classList.remove("turn-p2");
+                        activeTurn.style.border = "2px solid black";
                     }
                     turnBtns[i].classList.add("turn-p1");
                     updateTurn(turnBtns[i]);
                 } else {
                     if (activeTurn != null) {
-                        activeTurn.classList.remove("turn-p1");
+                        activeTurn.style.border = "2px solid black";
                     }
                     turnBtns[i].classList.add("turn-p2");
                     updateTurn(turnBtns[i]);
@@ -275,10 +275,12 @@ const display = (() => {
             if (turn.classList.contains("turn-p1")) {
                 _activePlayer = true;
                 status.textContent = `Status: ${p1Name} first`;
+                turn.style.border = "solid 3px royalblue";
             }
             if (turn.classList.contains("turn-p2")) {
                 _activePlayer = false;
                 status.textContent = `Status: ${p2Name} first`;
+                turn.style.border = "solid 3px rgb(209, 46, 46)";
             }
             return true;
         } catch (error) {
@@ -303,16 +305,17 @@ const display = (() => {
                 t = false;
                 updateTurn(activeTurn);
             }
-            activeGame = true;
             if (p1 != p2 && t) {
                 if (player1.getPlayer() == "p1") {
                     playerMoves(p1, p2);
                 } else {
                     playerMoves(p2, p1);
                 }
+                activeGame = true;
             }
             if (p1 == p2) {
                 status.textContent = "Status: Cannot have same X/O!";
+                activeTurn.style.border = "2px solid black";
             }
             startBtn.classList.add("start-pressed");
         }
