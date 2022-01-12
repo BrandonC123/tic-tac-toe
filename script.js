@@ -202,7 +202,7 @@ const display = (() => {
     exitBtn.addEventListener("click", () => {
         popup.classList.add("win-close");
         clearScreen();
-        status.textContent = "Status: press start for new game";
+        status.textContent = "Status: Press start to begin";
     });
 
     const enterBtns = document.querySelectorAll(".submit-data");
@@ -227,23 +227,24 @@ const display = (() => {
     });
 
     function newPlayer(p, player) {
-        document.getElementById(p).textContent = player;
-        document.getElementById(p + "-name").value = null;
-        const pSelection = document.querySelectorAll(`.${p}Selection`);
-        pSelection[0].removeAttribute("id");
-        pSelection[1].removeAttribute("id");
+        if (!activeGame) {
+            document.getElementById(p).textContent = player;
+            document.getElementById(p + "-name").value = null;
+            const pSelection = document.querySelectorAll(`.${p}Selection`);
+            pSelection[0].removeAttribute("id");
+            pSelection[1].removeAttribute("id");
+            return true;
+        } 
     }
 
     const newPlayerP1 = document.getElementById("new-p1");
     newPlayerP1.addEventListener("click", () => {
-        newPlayer("p1", "Player1");
-        player1 = null;
+        if (newPlayer("p1", "Player1")) player1 = null;;
     });
 
     const newPlayerP2 = document.getElementById("new-p2");
     newPlayerP2.addEventListener("click", () => {
-        newPlayer("p2", "Player2");
-        player2 = null;
+        if (newPlayer("p2", "Player2")) player2 = null;;
     });
 
     const turnBtns = document.querySelectorAll(".turn-btns");
@@ -300,10 +301,11 @@ const display = (() => {
         ) {
             let p1 = player1.getSelection();
             let p2 = player2.getSelection();
-            if (newRound) {
+            if (newRound && p1 != p2) {
                 openScreen();
                 t = false;
                 updateTurn(activeTurn);
+                activeGame = true;
             }
             if (p1 != p2 && t) {
                 if (player1.getPlayer() == "p1") {
@@ -328,6 +330,7 @@ const display = (() => {
     const resetBtn = document.getElementById("reset");
     resetBtn.addEventListener("click", () => {
         clearScreen();
+        status.textContent = "Status: Press start to begin";
     });
     return {
         playerMoves,
