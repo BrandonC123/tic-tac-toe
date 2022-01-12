@@ -90,15 +90,20 @@ const display = (() => {
     let _activePlayer = true;
     let player1;
     let player2;
+    let activeP1;
+    let activeP2;
     let newRound = false;
     let activeGame = false;
+    let activeTurn;
+    let count = 0;
+
     function displayMoves(box, choice) {
         box.textContent = choice;
         gameBoard.game.push(choice);
         return box;
     }
     const popup = document.querySelector(".win-popup");
-    let count = 0;
+
     function moves(p1Choice, p2Choice, box, i) {
         let color;
         if (_activePlayer && !box.classList.contains("taken")) {
@@ -145,12 +150,6 @@ const display = (() => {
             });
         }
     }
-    const exitBtn = document.getElementById("exit-win");
-    exitBtn.addEventListener("click", () => {
-        popup.classList.add("win-close");
-        clearScreen();
-        status.textContent = "Status: press start for new game";
-    });
     function clearScreen() {
         _boxes.forEach((box) => {
             box.textContent = "";
@@ -181,8 +180,6 @@ const display = (() => {
     }
 
     const selection = document.querySelectorAll(".selection");
-    let activeP1;
-    let activeP2;
     for (let i = 0; i < selection.length; i++) {
         selection[i].addEventListener("click", () => {
             if (i <= 1) {
@@ -200,6 +197,13 @@ const display = (() => {
             }
         });
     }
+
+    const exitBtn = document.getElementById("exit-win");
+    exitBtn.addEventListener("click", () => {
+        popup.classList.add("win-close");
+        clearScreen();
+        status.textContent = "Status: press start for new game";
+    });
 
     const enterBtns = document.querySelectorAll(".submit-data");
     enterBtns.forEach((btn) => {
@@ -221,8 +225,28 @@ const display = (() => {
             }
         });
     });
+
+    function newPlayer(p, player) {
+        document.getElementById(p).textContent = player;
+        document.getElementById(p + "-name").value = null;
+        const pSelection = document.querySelectorAll(`.${p}Selection`);
+        pSelection[0].removeAttribute("id");
+        pSelection[1].removeAttribute("id");
+    }
+
+    const newPlayerP1 = document.getElementById("new-p1");
+    newPlayerP1.addEventListener("click", () => {
+        newPlayer("p1", "Player1");
+        player1 = null;
+    });
+
+    const newPlayerP2 = document.getElementById("new-p2");
+    newPlayerP2.addEventListener("click", () => {
+        newPlayer("p2", "Player2");
+        player2 = null;
+    });
+
     const turnBtns = document.querySelectorAll(".turn-btns");
-    let activeTurn;
     for (let i = 0; i < turnBtns.length; i++) {
         turnBtns[i].addEventListener("click", () => {
             if (!activeGame) {
@@ -243,6 +267,7 @@ const display = (() => {
             }
         });
     }
+
     function updateTurn(turn) {
         try {
             let p1Name = player1.getName();
@@ -255,13 +280,15 @@ const display = (() => {
                 _activePlayer = false;
                 status.textContent = `Status: ${p2Name} first`;
             }
+            return true;
         } catch (error) {
             status.textContent =
                 "Status: Please create both player1 and player2";
         }
     }
-    const startBtn = document.getElementById("start-btn");
+
     let t = true;
+    const startBtn = document.getElementById("start-btn");
     startBtn.addEventListener("click", () => {
         if (
             player1 != null &&
@@ -290,9 +317,11 @@ const display = (() => {
             startBtn.classList.add("start-pressed");
         }
     });
+
     startBtn.addEventListener("transitionend", () => {
         startBtn.classList.remove("start-pressed");
     });
+
     const resetBtn = document.getElementById("reset");
     resetBtn.addEventListener("click", () => {
         clearScreen();
