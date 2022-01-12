@@ -1,11 +1,41 @@
+html {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    margin: 0;
+    height: 100%;
     background-color: lightgray;
-    font-family: 'Oswald', sans-serif;
+    font-family: "Oswald", sans-serif;
+}
+
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background-color: darkgray;
+}
+
+.welcome-selection {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.close-welcome {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .title {
@@ -54,7 +84,7 @@ body {
     border-radius: 2px;
     background-color: white;
     padding: 8px;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: "Ubuntu", sans-serif;
 }
 
 #p1-sel {
@@ -132,20 +162,12 @@ body {
     padding: 5px;
 }
 
-.turn-p1 {
-    border: solid 3px royalblue;
-}
-
-.turn-p2 {
-    border: solid 3px rgb(209, 46, 46);
-}
-
 #start-btn {
-    transition: all .2s;
+    transition: all 0.2s;
 }
 
 .start-pressed {
-    border: 3px solid purple;
+    border: 3px solid greenyellow;
     border-radius: 4px;
 }
 
@@ -177,6 +199,6 @@ input {
 }
 
 button {
-    font-family: 'Oswald', sans-serif;
+    font-family: "Oswald", sans-serif;
     font-size: 14px;
 }
