@@ -97,6 +97,44 @@ const display = (() => {
     let activeTurn;
     let count = 0;
 
+    const welcomeCont = document.querySelector(".welcome-container");
+    const goBtn = document.getElementById("go");
+    goBtn.addEventListener("click", () => {
+        welcomeCont.classList.add("close-welcome");
+    });
+
+    const playerSelect = document.getElementById("wselect-player");
+    playerSelect.addEventListener("click", () => {
+        if (aiSelectCont.classList.contains("ai-select-open")) {
+            aiSelectCont.classList.remove("ai-select-open");
+        }
+    });
+
+    const aiSelect = document.getElementById("wselect-ai");
+    const aiSelectCont = document.querySelector(".ai-select-cont");
+    aiSelect.addEventListener("click", () => {
+        aiSelectCont.classList.add("ai-select-open");
+        createEasyAi();
+    });
+
+    const aiSelections = document.querySelectorAll(".ai-select");
+    function createEasyAi() {
+        for (let i = 0; i < aiSelections.length; i++) {
+            aiSelections[i].addEventListener("click", () => {
+                document.getElementById("p2-name").value = "Computer";
+                const changeName = document.getElementById("p2");
+                changeName.textContent = "Computer";
+                if (i == 0) {
+                    createPlayer("Computer", "X", "p2");
+                    selection[2].setAttribute("id", "p2-sel");
+                } else {
+                    createPlayer("Computer", "O", "p2");
+                    selection[3].setAttribute("id", "p2-sel");
+                }
+            });
+        }
+    }
+
     function displayMoves(box, choice) {
         box.textContent = choice;
         gameBoard.game.push(choice);
@@ -174,8 +212,10 @@ const display = (() => {
     function createPlayer(playerName, selection, p) {
         if (p == "p1") {
             player1 = Player(playerName, selection, p);
+            turnBtns[0].textContent = `${player1.getName()} plays first`;
         } else {
             player2 = Player(playerName, selection, p);
+            turnBtns[1].textContent = `${player2.getName()} plays first`;
         }
     }
 
@@ -234,17 +274,17 @@ const display = (() => {
             pSelection[0].removeAttribute("id");
             pSelection[1].removeAttribute("id");
             return true;
-        } 
+        }
     }
 
     const newPlayerP1 = document.getElementById("new-p1");
     newPlayerP1.addEventListener("click", () => {
-        if (newPlayer("p1", "Player1")) player1 = null;;
+        if (newPlayer("p1", "Player1")) player1 = null;
     });
 
     const newPlayerP2 = document.getElementById("new-p2");
     newPlayerP2.addEventListener("click", () => {
-        if (newPlayer("p2", "Player2")) player2 = null;;
+        if (newPlayer("p2", "Player2")) player2 = null;
     });
 
     const turnBtns = document.querySelectorAll(".turn-btns");
