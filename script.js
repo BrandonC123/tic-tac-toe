@@ -96,6 +96,7 @@ const display = (() => {
     let activeGame = false;
     let activeTurn;
     let count = 0;
+    let ai = false;
 
     const welcomeCont = document.querySelector(".welcome-container");
     const goBtn = document.getElementById("go");
@@ -115,6 +116,7 @@ const display = (() => {
     aiSelect.addEventListener("click", () => {
         aiSelectCont.classList.add("ai-select-open");
         createEasyAi();
+        ai = true;
     });
 
     const aiSelections = document.querySelectorAll(".ai-select");
@@ -135,6 +137,17 @@ const display = (() => {
         }
     }
 
+    function getEasyAiMove(count) {
+        let aiMove = Math.floor(Math.random() * 9);
+        console.log(aiMove);
+        if (!_boxes[aiMove].classList.contains("taken")) {
+            moves(player1.getSelection(), player2.getSelection(), 
+            _boxes[aiMove], aiMove);
+        } else if (count <= 9) {
+            getEasyAiMove();
+        }
+    }
+
     function displayMoves(box, choice) {
         box.textContent = choice;
         gameBoard.game.push(choice);
@@ -151,6 +164,9 @@ const display = (() => {
             color = "p1-color";
             status.textContent = `Status: ${player2.getName()} turn`;
             count++;
+            if (ai) {
+                getEasyAiMove(count);
+            }
         } else if (!_activePlayer && !box.classList.contains("taken")) {
             box = displayMoves(box, p2Choice);
             box.classList.add("taken", "p2-color");
@@ -355,6 +371,9 @@ const display = (() => {
                 }
                 activeGame = true;
             }
+            // if (ai && !_activePlayer) {
+            //     getEasyAiMove();
+            // }
             if (p1 == p2) {
                 status.textContent = "Status: Cannot have same X/O!";
                 activeTurn.style.border = "2px solid black";
