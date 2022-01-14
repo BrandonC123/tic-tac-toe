@@ -109,12 +109,16 @@ const display = (() => {
         if (aiSelectCont.classList.contains("ai-select-open")) {
             aiSelectCont.classList.remove("ai-select-open");
         }
+        aiSelect.classList.remove("btn-pressed");
+        playerSelect.classList.add("btn-pressed");
     });
 
     const aiSelect = document.getElementById("wselect-ai");
     const aiSelectCont = document.querySelector(".ai-select-cont");
     aiSelect.addEventListener("click", () => {
         aiSelectCont.classList.add("ai-select-open");
+        playerSelect.classList.remove("btn-pressed");
+        aiSelect.classList.add("btn-pressed");
         createEasyAi();
         ai = true;
     });
@@ -127,9 +131,11 @@ const display = (() => {
                 const changeName = document.getElementById("p2");
                 changeName.textContent = "Computer";
                 if (i == 0) {
+                    selection[3].removeAttribute("id");
                     createPlayer("Computer", "X", "p2");
                     selection[2].setAttribute("id", "p2-sel");
                 } else {
+                    selection[2].removeAttribute("id");
                     createPlayer("Computer", "O", "p2");
                     selection[3].setAttribute("id", "p2-sel");
                 }
@@ -137,14 +143,29 @@ const display = (() => {
         }
     }
 
+    for (let i = 0; i < aiSelections.length; i++) {
+        aiSelections[i].addEventListener("click", () => {
+            if (i == 0) {
+                aiSelections[i + 1].classList.remove("btn-pressed");
+            } else {
+                aiSelections[i - 1].classList.remove("btn-pressed");
+            }
+            aiSelections[i].classList.add("btn-pressed");
+        });
+    }
+
     function getEasyAiMove(count) {
         let aiMove = Math.floor(Math.random() * 9);
         console.log(aiMove);
         if (!_boxes[aiMove].classList.contains("taken")) {
-            moves(player1.getSelection(), player2.getSelection(), 
-            _boxes[aiMove], aiMove);
-        } else if (count <= 9) {
-            getEasyAiMove();
+            moves(
+                player1.getSelection(),
+                player2.getSelection(),
+                _boxes[aiMove],
+                aiMove
+            );
+        } else if (count < 9) {
+            getEasyAiMove(count);
         }
     }
 
@@ -157,6 +178,7 @@ const display = (() => {
 
     function moves(p1Choice, p2Choice, box, i) {
         let color;
+        const text = document.getElementById("win-text");
         if (_activePlayer && !box.classList.contains("taken")) {
             box = displayMoves(box, p1Choice);
             box.classList.add("taken", "p1-color");
@@ -164,7 +186,7 @@ const display = (() => {
             color = "p1-color";
             status.textContent = `Status: ${player2.getName()} turn`;
             count++;
-            if (ai) {
+            if (ai && !tester()) {
                 getEasyAiMove(count);
             }
         } else if (!_activePlayer && !box.classList.contains("taken")) {
@@ -174,27 +196,32 @@ const display = (() => {
             color = "p2-color";
             status.textContent = `Status: ${player1.getName()} turn`;
             count++;
+            tester();
         }
-        const text = document.getElementById("win-text");
-        if (gameBoard.gameDecider(i, color)) {
-            if (color == "p1-color") {
-                text.textContent =
-                    document.getElementById("p1").textContent +
-                    " is the winner!";
-            } else {
-                text.textContent =
-                    document.getElementById("p2").textContent +
-                    " is the winner!";
-            }
-            popup.classList.add("win-open");
-            _boxes.forEach((boxDel) => {
-                if (!boxDel.classList.contains("taken")) {
-                    boxDel.classList.add("taken");
+        function tester() {
+            if (gameBoard.gameDecider(i, color)) {
+                if (color == "p1-color") {
+                    text.textContent =
+                        document.getElementById("p1").textContent +
+                        " is the winner!";
+                } else {
+                    text.textContent =
+                        document.getElementById("p2").textContent +
+                        " is the winner!";
                 }
-            });
-        } else if (count == 9) {
-            text.textContent = "Tie!";
-            popup.classList.add("win-open");
+                popup.classList.add("win-open");
+                _boxes.forEach((boxDel) => {
+                    if (!boxDel.classList.contains("taken")) {
+                        boxDel.classList.add("taken");
+                    }
+                });
+                return true;
+            } else if (count == 9) {
+                text.textContent = "Tie!";
+                popup.classList.add("win-open");
+                return true;
+            }
+            return false;
         }
     }
     function playerMoves(p1Choice, p2Choice) {
@@ -371,9 +398,9 @@ const display = (() => {
                 }
                 activeGame = true;
             }
-            // if (ai && !_activePlayer) {
-            //     getEasyAiMove();
-            // }
+            if (ai && !_activePlayer) {
+                getEasyAiMove();
+            }
             if (p1 == p2) {
                 status.textContent = "Status: Cannot have same X/O!";
                 activeTurn.style.border = "2px solid black";
