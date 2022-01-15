@@ -1,6 +1,7 @@
 const gameBoard = (() => {
     let game = [];
     const boxes = document.querySelectorAll(".box");
+
     function gameDecider(num, playerClass) {
         if (num == 0 || num == 1 || num == 2) {
             if (winCheck(num, playerClass, 3)) {
@@ -43,6 +44,8 @@ const gameBoard = (() => {
             if (winCheckCenter(num, playerClass, 2)) return true;
         }
     }
+
+    //Checks for the outer boxes in the horizontal/vertical direction
     function winCheck(num, playerClass, value) {
         if (
             boxes[num + value].classList.contains(playerClass) &&
@@ -52,6 +55,8 @@ const gameBoard = (() => {
         }
         return false;
     }
+
+    //Checks for diagnols and center pieces
     function winCheckCenter(num, playerClass, value) {
         if (
             boxes[num + value].classList.contains(playerClass) &&
@@ -111,6 +116,7 @@ const display = (() => {
         }
         aiSelect.classList.remove("btn-pressed");
         playerSelect.classList.add("btn-pressed");
+        ai = false;
     });
 
     const aiSelect = document.getElementById("wselect-ai");
@@ -119,12 +125,12 @@ const display = (() => {
         aiSelectCont.classList.add("ai-select-open");
         playerSelect.classList.remove("btn-pressed");
         aiSelect.classList.add("btn-pressed");
-        createEasyAi();
+        createAiPlayer();
         ai = true;
     });
 
     const aiSelections = document.querySelectorAll(".ai-select");
-    function createEasyAi() {
+    function createAiPlayer() {
         for (let i = 0; i < aiSelections.length; i++) {
             aiSelections[i].addEventListener("click", () => {
                 document.getElementById("p2-name").value = "Computer";
@@ -154,6 +160,8 @@ const display = (() => {
         });
     }
 
+    //Generates random number for box position. If that position is filled
+    //it recursively calls till it finds one that is not filled or is tied.
     function getEasyAiMove(count) {
         let aiMove = Math.floor(Math.random() * 9);
         console.log(aiMove);
@@ -174,6 +182,7 @@ const display = (() => {
         gameBoard.game.push(choice);
         return box;
     }
+
     const popup = document.querySelector(".win-popup");
 
     function moves(p1Choice, p2Choice, box, i) {
@@ -186,6 +195,7 @@ const display = (() => {
             color = "p1-color";
             status.textContent = `Status: ${player2.getName()} turn`;
             count++;
+            tester();
             if (ai && !tester()) {
                 getEasyAiMove(count);
             }
@@ -198,6 +208,7 @@ const display = (() => {
             count++;
             tester();
         }
+
         function tester() {
             if (gameBoard.gameDecider(i, color)) {
                 if (color == "p1-color") {
@@ -224,6 +235,7 @@ const display = (() => {
             return false;
         }
     }
+
     function playerMoves(p1Choice, p2Choice) {
         for (let i = 0; i < _boxes.length; i++) {
             _boxes[i].addEventListener("click", () => {
@@ -231,6 +243,7 @@ const display = (() => {
             });
         }
     }
+
     function clearScreen() {
         _boxes.forEach((box) => {
             box.textContent = "";
@@ -244,6 +257,7 @@ const display = (() => {
         newRound = true;
         count = 0;
     }
+
     function openScreen() {
         _boxes.forEach((box) => {
             box.classList.remove("taken");
@@ -252,6 +266,7 @@ const display = (() => {
         popup.classList.remove("win-close");
         newRound = false;
     }
+
     function createPlayer(playerName, selection, p) {
         if (p == "p1") {
             player1 = Player(playerName, selection, p);
@@ -373,7 +388,7 @@ const display = (() => {
         }
     }
 
-    let t = true;
+    let firstRound = true;
     const startBtn = document.getElementById("start-btn");
     startBtn.addEventListener("click", () => {
         if (
@@ -384,13 +399,18 @@ const display = (() => {
         ) {
             let p1 = player1.getSelection();
             let p2 = player2.getSelection();
+            if (p1 == p2) {
+                status.textContent = "Status: Cannot have same X/O!";
+                activeTurn.style.border = "2px solid black";
+                return;
+            }
             if (newRound && p1 != p2) {
                 openScreen();
-                t = false;
+                firstRound = false;
                 updateTurn(activeTurn);
                 activeGame = true;
             }
-            if (p1 != p2 && t) {
+            if (p1 != p2 && firstRound) {
                 if (player1.getPlayer() == "p1") {
                     playerMoves(p1, p2);
                 } else {
@@ -401,10 +421,7 @@ const display = (() => {
             if (ai && !_activePlayer) {
                 getEasyAiMove();
             }
-            if (p1 == p2) {
-                status.textContent = "Status: Cannot have same X/O!";
-                activeTurn.style.border = "2px solid black";
-            }
+
             startBtn.classList.add("start-pressed");
         }
     });
@@ -418,10 +435,8 @@ const display = (() => {
         clearScreen();
         status.textContent = "Status: Press start to begin";
     });
+    
     return {
         playerMoves,
-        createPlayer,
     };
 })();
-// const testPlayer1 = display.createPlayer("brandon", "X");
-// const testPlayer2 = display.createPlayer("brando", "O");
