@@ -186,11 +186,11 @@ const display = (() => {
 
     const _popup = document.querySelector(".win-popup");
 
-    function _moves(p1Choice, p2Choice, box, i) {
+    function _moves(box, i) {
         let color;
         const text = document.getElementById("win-text");
         if (_activePlayer && !box.classList.contains("taken")) {
-            box = _displayMoves(box, p1Choice);
+            box = _displayMoves(box, player1.getSelection());
             box.classList.add("taken", "p1-color");
             _activePlayer = false;
             color = "p1-color";
@@ -201,7 +201,7 @@ const display = (() => {
                 _getEasyAiMove(count);
             }
         } else if (!_activePlayer && !box.classList.contains("taken")) {
-            box = _displayMoves(box, p2Choice);
+            box = _displayMoves(box, player2.getSelection());
             box.classList.add("taken", "p2-color");
             _activePlayer = true;
             color = "p2-color";
@@ -237,10 +237,10 @@ const display = (() => {
         }
     }
 
-    function playerMoves(p1Choice, p2Choice) {
+    function playerMoves() {
         for (let i = 0; i < _boxes.length; i++) {
             _boxes[i].addEventListener("click", () => {
-                _moves(p1Choice, p2Choice, _boxes[i], i);
+                _moves(_boxes[i], i);
             });
         }
     }
@@ -405,20 +405,19 @@ const display = (() => {
                 activeTurn.style.border = "2px solid black";
                 return;
             }
-            if (newRound && p1 != p2) {
-                _openScreen();
+            if (_firstRound ) {
+                playerMoves();
                 _firstRound = false;
+            }
+            else if (newRound) {
+                _openScreen();
                 _updateTurn(activeTurn);
-                activeGame = true;
             }
-            if (p1 != p2 && _firstRound) {
-                playerMoves(p1, p2);
-                activeGame = true;
-            }
+            console.log(`p1: ${p1}, p2: ${p2}`);
             if (ai && !_activePlayer) {
                 _getEasyAiMove();
             }
-
+            activeGame = true;
             _startBtn.classList.add("start-pressed");
         }
     });
