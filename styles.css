@@ -16,16 +16,25 @@ body {
     font-family: "Oswald", sans-serif;
 }
 
+.welcome-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background-color: #cacdce;
+}
+
 .welcome-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
-    background-color: darkgray;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #B8C4CD;
 }
 
 .welcome-selection {
@@ -38,7 +47,8 @@ body {
     padding: 10px;
     opacity: 0;
     pointer-events: none;
-    background-color: white;
+    background-color: #EEF2F3;
+    border-radius: 5px;
 }
 
 .btn-pressed {
