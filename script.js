@@ -103,10 +103,10 @@ const display = (() => {
     let count = 0;
     let ai = false;
 
-    const _welcomeCont = document.querySelector(".welcome-container");
+    const _welcomeScreen = document.querySelector(".welcome-screen");
     const _goBtn = document.getElementById("go");
     _goBtn.addEventListener("click", () => {
-        _welcomeCont.classList.add("close-welcome");
+        _welcomeScreen.classList.add("close-welcome");
     });
 
     const _playerSelect = document.getElementById("wselect-player");
@@ -141,10 +141,12 @@ const display = (() => {
                     _selection[3].removeAttribute("id");
                     _createPlayer("Computer", "X", "p2");
                     _selection[2].setAttribute("id", "p2-sel");
+                    activeP2 = _selection[2];
                 } else {
                     _selection[2].removeAttribute("id");
                     _createPlayer("Computer", "O", "p2");
                     _selection[3].setAttribute("id", "p2-sel");
+                    activeP2 = _selection[3];
                 }
             });
         }
@@ -165,14 +167,8 @@ const display = (() => {
     //it recursively calls till it finds one that is not filled or is tied.
     function _getEasyAiMove(count) {
         let aiMove = Math.floor(Math.random() * 9);
-        console.log(aiMove);
         if (!_boxes[aiMove].classList.contains("taken")) {
-            _moves(
-                player1.getSelection(),
-                player2.getSelection(),
-                _boxes[aiMove],
-                aiMove
-            );
+            _moves(_boxes[aiMove], aiMove);
         } else if (count < 9) {
             _getEasyAiMove(count);
         }
@@ -405,15 +401,13 @@ const display = (() => {
                 activeTurn.style.border = "2px solid black";
                 return;
             }
-            if (_firstRound ) {
+            if (_firstRound) {
                 playerMoves();
                 _firstRound = false;
-            }
-            else if (newRound) {
+            } else if (newRound) {
                 _openScreen();
                 _updateTurn(activeTurn);
             }
-            console.log(`p1: ${p1}, p2: ${p2}`);
             if (ai && !_activePlayer) {
                 _getEasyAiMove();
             }
